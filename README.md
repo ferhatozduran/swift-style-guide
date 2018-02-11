@@ -33,16 +33,43 @@ This guide was last updated for Swift 4.0 on January 23, 2018.
 * **1.2** Avoid uncomfortably long lines with a hard maximum of 160 characters per line (Xcode->Preferences->Text Editing->Page guide at column: 160 is helpful for this)
 * **1.3** Ensure that there is a newline at the end of every file.
 * **1.4** Ensure that there is no trailing whitespace anywhere (Xcode->Preferences->Text Editing->Automatically trim trailing whitespace + Including whitespace-only lines).
-* **1.5** Do not place opening braces on new lines - we use the [1TBS style](https://en.m.wikipedia.org/wiki/Indentation_style#1TBS).
+* **1.5** Braces
+    * **1.5.1** Place opening braces on new line for functions, extensions and types (classes, protocols, enums, etc.)
+    * **1.5.2** Place opening braces on same line for if, while, try/catch, closures.
+    * **1.5.3** If not sure about new or same line, always favor new line.
+    * **1.5.4** Nothing should follow a closing brace on the same line, including `else` and `else if`.
 
 ```swift
-class SomeClass {
-    func someMethod() {
+class SomeClass
+{
+    func someMethod()
+    {
         if x == y {
             /* ... */
-        } else if x == z {
+        }
+        else if x == z {
             /* ... */
-        } else {
+        }
+        else {
+            /* ... */
+        }
+
+        while condition {
+            /* ... */
+        }
+
+        do {
+            /* ... */
+        }
+        catch {
+            /* ... */
+        }
+
+        let closure: (success: Bool) -> Void = { (success) in
+            /* ... */
+        }
+
+        UIView.animate(withDuration: 0.4) {
             /* ... */
         }
     }
@@ -120,16 +147,15 @@ if myFirstValue > (mySecondValue + myThirdValue)
 }
 ```
 
-* **1.10** When calling a function that has many parameters, put each argument on a separate line with a single extra indentation.
+* **1.10** When declaring or calling a function that has many parameters, put each argument after the first one on a separate line with a single extra indentation.
 
 ```swift
-someFunctionWithManyArguments(
-    firstArgument: "Hello, I am a string",
-    secondArgument: resultFromSomeFunction(),
-    thirdArgument: someOtherLocalProperty)
+someFunctionWithManyArguments(firstArgument: "Hello, I am a string",
+                              secondArgument: resultFromSomeFunction(),
+                              thirdArgument: someOtherLocalProperty)
 ```
 
-* **1.11** When dealing with an implicit array or dictionary large enough to warrant splitting it into multiple lines, treat the `[` and `]` as if they were braces in a method, `if` statement, etc. Closures in a method should be treated similarly.
+* **1.11** When dealing with an implicit array or dictionary large enough to warrant splitting it into multiple lines, either place every element on a new line or only the ones after the first one.
 
 ```swift
 someFunctionWithABunchOfArguments(
@@ -145,6 +171,10 @@ someFunctionWithABunchOfArguments(
     someClosure: { parameter1 in
         print(parameter1)
     })
+
+let fruits = ["apple",
+              "orange",
+              "banana"]
 ```
 
 * **1.12** Prefer using local constants or other mitigation techniques to avoid multi-line predicates where possible.
@@ -254,6 +284,11 @@ class RoundAnimating: UIButton {
         let v = subviews.first
     }
 }
+
+// `s` for `strong` `self` can be an exception.
+someMethod(escapingClosue: { [weak self] in
+    guard s = self else { return }
+})
 ```
 
 * **2.9** Include type information in constant or variable names when it is not obvious otherwise.
@@ -903,43 +938,6 @@ if let monkeyIsland = monkeyIsland {
 if let woodchuck = woodchuck, canChuckWood(woodchuck) {
     woodchuck.chuckWood()
 }
-```
-
-* **3.11.6** Often, we can run into a situation in which we need to unwrap multiple optionals using `guard` statements. In general, combine unwraps into a single `guard` statement if handling the failure of each unwrap is identical (e.g. just a `return`, `break`, `continue`, `throw`, or some other `@noescape`).
-
-```swift
-// combined because we just return
-guard let thingOne = thingOne,
-    let thingTwo = thingTwo,
-    let thingThree = thingThree else {
-    return
-}
-
-// separate statements because we handle a specific error in each case
-guard let thingOne = thingOne else {
-    throw Error(message: "Unwrapping thingOne failed.")
-}
-
-guard let thingTwo = thingTwo else {
-    throw Error(message: "Unwrapping thingTwo failed.")
-}
-
-guard let thingThree = thingThree else {
-    throw Error(message: "Unwrapping thingThree failed.")
-}
-```
-
-* **3.11.7** Don’t use one-liners for `guard` statements.
-
-
-```swift
-// PREFERRED
-guard let thingOne = thingOne else {
-    return
-}
-
-// NOT PREFERRED
-guard let thingOne = thingOne else { return }
 ```
 
 ## 4. Documentation/Comments
